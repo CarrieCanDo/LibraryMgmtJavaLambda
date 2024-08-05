@@ -1,4 +1,5 @@
 package org.example;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -51,7 +52,6 @@ public class Library {
                 .orElse(null);
     }
 
-
     // Method to find all books with more than n pages
     public List<Book> findBooksWithMoreThanNPages(int n) {
         Predicate<Book> moreThanNPages = book -> book.getPages() > n;
@@ -62,10 +62,11 @@ public class Library {
 
     // Method to print all book titles in the library, sorted alphabetically
     public void printAllBookTitles() {
+        Consumer<String> printTitle = title -> System.out.println(title);
         books.stream()
                 .map(book -> book.getTitle())
                 .sorted()
-                .forEach(title -> System.out.println(title));
+                .forEach(printTitle);
     }
 
     // Method to find all books in a specific category
@@ -105,13 +106,15 @@ public class Library {
 
     // Method to calculate late fees
     public double calculateLateFees(Book book) {
-        if (book.isOnLoan() && book.getBorrowDate() != null) {
-            long daysOnLoan = ChronoUnit.DAYS.between(book.getBorrowDate(), LocalDate.now());
-            if (daysOnLoan > 14) {
-                return (daysOnLoan - 14) * 0.50; // $0.50 per day after 2 weeks
+        Function<Book, Double> calculateFee = b -> {
+            if (b.isOnLoan() && b.getBorrowDate() != null) {
+                long daysOnLoan = ChronoUnit.DAYS.between(b.getBorrowDate(), LocalDate.now());
+                if (daysOnLoan > 14) {
+                    return (daysOnLoan - 14) * 0.50; // $0.50 per day after 2 weeks
+                }
             }
-        }
-        return 0.0;
+            return 0.0;
+        };
+        return calculateFee.apply(book);
     }
 }
-
