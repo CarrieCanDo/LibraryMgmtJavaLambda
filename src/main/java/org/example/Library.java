@@ -29,6 +29,14 @@ public class Library {
         books.removeIf(byTitle);
     }
 
+    // Method to find books by title
+    public List<Book> findBooksByTitle(String title) {
+        Predicate<Book> byTitle = book -> book.getTitle().equals(title);
+        return books.stream()
+                .filter(byTitle)
+                .collect(Collectors.toList());
+    }
+
     // Method to find all books published in a specific year
     public List<Book> findBooksByYear(int year) {
         Predicate<Book> byYear = book -> book.getPublicationYear() == year;
@@ -48,7 +56,7 @@ public class Library {
     // Method to find the book with the most pages
     public Book findBookWithMostPages() {
         return books.stream()
-                .max(Comparator.comparingInt(book -> book.getPages()))
+                .max(Comparator.comparingInt(Book::getPages))
                 .orElse(null);
     }
 
@@ -62,9 +70,9 @@ public class Library {
 
     // Method to print all book titles in the library, sorted alphabetically
     public void printAllBookTitles() {
-        Consumer<String> printTitle = title -> System.out.println(title);
+        Consumer<String> printTitle = System.out::println;
         books.stream()
-                .map(book -> book.getTitle())
+                .map(Book::getTitle)
                 .sorted()
                 .forEach(printTitle);
     }
@@ -80,7 +88,7 @@ public class Library {
     // Method to loan out a book
     public boolean loanBook(String title) {
         Predicate<Book> byTitle = book -> book.getTitle().equals(title);
-        Supplier<LocalDate> currentDate = () -> LocalDate.now();
+        Supplier<LocalDate> currentDate = LocalDate::now;
         for (Book book : books) {
             if (byTitle.test(book) && !book.isOnLoan()) {
                 book.setOnLoan(true);
