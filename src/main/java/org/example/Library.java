@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Library {
-    private List<Book> books;
+    private final List<Book> books;
 
     public Library() {
         this.books = new ArrayList<>();
